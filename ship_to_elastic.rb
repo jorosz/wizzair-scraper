@@ -19,9 +19,9 @@ require "httpclient"
 
 scraper = WizzScraper.new
 client = Elasticsearch::Client.new log: true, adapter: :httpclient
-client.cluster.health
+depart = (Date.today).strftime('%d/%m/%Y')
 
-scraper.search 'LTN','BUD','12/11/2015','17/11/2015' do |flight|
+scraper.search_multiple_days 'LTN','BUD',depart,28 do |flight|
   pp flight
   client.index index: 'wizzair', type: 'flight', body: flight
 end
