@@ -85,7 +85,7 @@ class WizzScraper
       if date_str then
         date_arr = date_str.split '~'
         entry = {
-          'sample_time' => DateTime.now.strftime,
+          'sample_time' => @sample_time,
           'amount' => label.xpath('text()').text.match(/\d+(\.\d+)?/mi)[0].to_s,
           'departure' => DateTime.strptime(date_arr[12], '%m/%d/%Y %H:%M').strftime,
           'from_airport' => date_arr[11],
@@ -99,6 +99,8 @@ class WizzScraper
   # Search using the main page
   def search(origin, destination, departure_date, return_date)
     result = []
+    
+    @sample_time = DateTime.now.strftime
     
     response = do_http("https://wizzair.com/en-GB/FlightSearch")
     raise 'error getting homepage' unless response.is_a? Net::HTTPSuccess
