@@ -13,14 +13,16 @@
 #    limitations under the License.
 
 require 'pp'
-require "./wizzair.rb"
+require "./wizzair_api.rb"
 
-
-scraper = WizzScraper.new
-depart = (Date.today+7).strftime('%d/%m/%Y')
-ret = (Date.today+14).strftime('%d/%m/%Y')
+scraper = WizzAPI.new
+depart = (Date.today+7).strftime('%Y-%m-%d')
+ret = (Date.today+14).strftime('%Y-%m-%d')
 
 puts "Searching #{depart} - #{ret}"
-scraper.search 'LTN','BUD',depart,ret do |flight|
-  pp flight
-end
+pp scraper.search 'LTN','BUD',depart,ret
+
+pp scraper.search 'LTN','BUD',Date.today+7
+
+puts "Searching 5 days from #{depart}"
+pp scraper.search_multiple_days 'LTN','BUD',depart,ret,5
