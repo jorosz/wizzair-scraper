@@ -68,33 +68,6 @@ class WizzAPI
        end
   end
 
-  def api_search(data)
-    headers = {
-      "Referer" => "https://wizzair.com/"
-    }
-    
-    # Post the data
-    response=do_http(API_ENDPOINT+"search",:post,data,headers)
-    raise 'error getting search results' unless response.is_a? Net::HTTPSuccess
-    
-    # Parse response
-    res = JSON.parse(response.body)
-    [*res['outboundFlights'],*res['returnFlights']].each do |flight|  
-        entry = {
-          from_airport: flight['departureStation'] ,
-          to_airport: flight['arrivalStation'] ,
-          flight_code: flight['carrierCode']+flight['flightNumber'],
-          departure: DateTime.parse(flight['departureDateTime'])
-        }
-        fares = []
-        flight['fares'].each do |fare|
-          fares << fare['discountedPrice']['amount']   
-        end
-        entry[:best_fare] = fares.min    
-        yield entry
-    end
-  end
-
   # Search for a flight with return date
   def search(origin, destination, departure_date, return_date=nil)
     result = []
@@ -123,9 +96,27 @@ class WizzAPI
               departureDate: return_date
     } unless return_date.nil? 
     
-    api_search(data) do |entry|
-      yield entry if block_given?
-      result << entry
+    
+    # Post the data    
+    headers = { "Referer" => "https://wizzair.com/" }
+    response=do_http(API_ENDPOINT+"search",:post,data,headers)
+    raise 'error getting search results' unless response.is_a? Net::HTTPSuccess
+    
+    # Parse response
+    res = JSON.parse(response.body)
+    [*res['outboundFlights'],*res['returnFlights']].each do |flight|  
+        entry = {
+          from_airport: flight['departureStation'] ,
+          to_airport: flight['arrivalStation'] ,
+          flight_code: flight['carrierCode']+flight['flightNumber'],
+          departure: DateTime.parse(flight['departureDateTime'])
+        }
+        # Collect fares to get best fare
+        fares = flight['fares'].collect { |f| f['discountedPrice']['amount'] }
+        entry[:best_fare] = fares.min
+        
+        yield entry
+        result << entry
     end
 
     return result
