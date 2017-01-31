@@ -23,24 +23,15 @@ store = YAML::Store.new "data.yml"
 watches = []
 email = {}
 
+# One liner lambda to convert hash keys to symbols from strings for email
+symbolize = lambda { |h| h.is_a?(Hash) ? Hash[h.map { |k,v| [ k.to_sym, symbolize[v] ]}] : h }
+
 store.transaction(true) do
   # Read data
-  email_yml = store['email']
   watches = store['watch']
-  
-  # Transpose email settings to use symbols rather than strings as keys (Pony requires symbols)
-  email_yml.each do |k,v| 
-    if v.is_a?(Hash)
-      email[k.to_sym]={}
-      v.each { |kk,vv| email[k.to_sym][kk.to_sym] = vv }
-    else
-      email[k.to_sym]=v      
-    end
-  end
+  email = symbolize[store['email']]
   email[:body] = ""
-  
 end
-
 
 abort "Nothing to do?! Do you have 'watch' entries in the yml?" unless defined?(watches)
 
