@@ -1,0 +1,25 @@
+# Sample data file - copy it to data.yml for it to work
+# Note: this file is overwritten by watch.rb with the best_fare updated whenever it is run
+---
+email:
+  # Note: this section has email settings, most options are passed to the Pony library
+  # See https://github.com/benprew/pony for details on options
+  to: someone@somemai.co.uk
+  from: someone@somemai.co.uk
+  subject: Wizz Fare Alert
+  via: :smtp
+  via_options:
+    address: smtp.gmail.com
+    port: '587'
+    enable_starttls_auto: true
+    user_name: gmail_user
+    password: gmail_password
+    authentication: :plain
+watch:
+  # This section is a list of hashes with 'from' 'to' and 'date' fields
+  # Optional 'flight' argument to watch a specific flight# on the given day
+- from: LTN 
+  to: BUD
+  date: 2017-02-20
+  flight: W62202
+  # best_fare will be added by watch.rb with the best fare

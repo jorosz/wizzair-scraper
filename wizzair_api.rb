@@ -18,7 +18,7 @@ class WizzAPI
   require "json"
   require "pp"
   
-  API_ENDPOINT = "https://be.wizzair.com/3.3.3/Api/search/"
+  API_ENDPOINT = "https://be.wizzair.com/3.9.0/Api/search/"
   
   def initialize
     @jar = HTTP::CookieJar.new
@@ -115,7 +115,7 @@ class WizzAPI
         fares = flight['fares'].collect { |f| f['discountedPrice']['amount'] }
         entry[:best_fare] = fares.min
         
-        yield entry
+        yield entry if block_given?
         result << entry
     end
 
