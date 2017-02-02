@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+#
 # Copyright Jozsef Orosz jozsef@orosz.name
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,10 +32,10 @@ store.transaction(true) do
   # Read data
   watches = store['watch']
   email = symbolize[store['email']]
-  email[:body] = ""
+  email[:body] = "" unless email.nil?
 end
 
-abort "Nothing to do?! Do you have 'watch' entries in the yml?" unless defined?(watches)
+abort "Nothing to do?! Do you have 'watch' entries in data.yml?" if watches.nil?
 
 scraper = WizzAPI.new
 watches.each_with_index do |watch, index|
@@ -63,4 +65,4 @@ watches.each_with_index do |watch, index|
 end
 
 # Finally send email if we have a body and someone to send to
-Pony.mail(email) if not (email[:body].empty? || email[:to].nil? )
+Pony.mail(email) if not (email.nil? || email[:body].empty? || email[:to].nil? )
