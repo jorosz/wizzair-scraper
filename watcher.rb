@@ -65,4 +65,4 @@ watches.each_with_index do |watch, index|
 end
 
 # Finally send email if we have a body and someone to send to
-Pony.mail(email) if not (email.nil? || email[:body].empty? || email[:to].nil? )
+Pony.mail(email) if email && !email[:body].empty? && !email[:to].empty?
