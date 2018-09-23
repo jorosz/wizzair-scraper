@@ -94,6 +94,8 @@ class WizzAPI
       childCount: 0,
       infantCount: 0,
       wdc: true,
+      isFlightChange: false,
+      isSeniorOrStudent: false,
       flightList: [
         {
           departureStation: origin,
