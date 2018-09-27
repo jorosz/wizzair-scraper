@@ -46,8 +46,9 @@ watches.each_with_index do |watch, index|
     next
   end
 
-  best_price_orig = best_price = watch.fetch 'best_fare',Float::INFINITY
-  puts "["+index.to_s+"] searching "+watch['from']+" > "+watch['to']+" on "+watch['date'].to_s+" best price @ "+best_price.to_s
+  best_price_orig = watch.fetch 'best_fare',Float::INFINITY
+  best_price = Float::INFINITY
+  puts "["+index.to_s+"] searching "+watch['from']+" > "+watch['to']+" on "+watch['date'].to_s+" best price @ "+best_price_orig.to_s
 
   res = scraper.search watch['from'],watch['to'],watch['date']
   res.each do |f|
